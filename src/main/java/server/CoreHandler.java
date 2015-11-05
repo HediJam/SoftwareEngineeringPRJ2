@@ -30,7 +30,7 @@ public class CoreHandler {
             Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void readJSONFile(){
+    public void readJSONFile(Integer port){
         JSONParser parser = new JSONParser();
         Object obj = null;
         
@@ -43,14 +43,22 @@ public class CoreHandler {
         }
         
             JSONObject jsonObject = (JSONObject) obj;
-            String port = (String) jsonObject.get("port");
+            port = (Integer) jsonObject.get("port");
+            
+            
             JSONArray depositsArray = (JSONArray) jsonObject.get("deposits");
- 
             System.out.println("port: " + port);  
             System.out.println("\ndeposits Array:");
-            Iterator<String> iteratorOverDeposits = depositsArray.iterator();
+            Iterator<JSONObject> iteratorOverDeposits = depositsArray.iterator();
             while (iteratorOverDeposits.hasNext()) {
-                System.out.println(iteratorOverDeposits.next());
+                JSONObject deposit = iteratorOverDeposits.next();
+                String customerName = (String) deposit.get("customer");
+                String customerId = (String) deposit.get("id");
+                String initialBalance = (String) deposit.get("initialBalance");
+                String upperBound =(String) deposit.get("upperBound");
+                System.out.println(customerId + " " + customerName + " " + initialBalance + " " + upperBound);
             }
+            String logFile = (String) jsonObject.get("outLog");
+            
     }
 }
