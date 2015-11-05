@@ -17,12 +17,14 @@ import java.net.Socket;
  * @author SARIR
  */
 public class BankServer {
-    private String coreFilePath;
+    private String coreFilePath = "core.json";
     private String logFilePath;
-    private int port = 9898;
+    private Integer port = 9898;
     
     public static void main(String[] args) throws Exception {
         BankServer bs = new BankServer();
+        CoreHandler jsonCoreHandler = new CoreHandler(bs.coreFilePath);
+        jsonCoreHandler.readJSONFile(bs.port);
         System.out.println("The Banking server is running.");
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
