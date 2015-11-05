@@ -37,36 +37,7 @@ public class Terminal {
      * textfield contents to the server.
      */
     public Terminal() {
-
-        // Layout GUI
-        messageArea.setEditable(false);
-        frame.getContentPane().add(dataField, "North");
-        frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-
-        // Add Listeners
-        dataField.addActionListener(new ActionListener() {
-            /**
-             * Responds to pressing the enter key in the textfield by sending
-             * the contents of the text field to the server and displaying the
-             * response from the server in the text area. If the response is "."
-             * we exit the whole application, which closes all sockets, streams
-             * and windows.
-             */
-            public void actionPerformed(ActionEvent e) {
-                out.println(dataField.getText());
-                String response;
-                try {
-                    response = in.readLine();
-                    if (response == null || response.equals("")) {
-                        System.exit(0);
-                    }
-                } catch (IOException ex) {
-                    response = "Error: " + ex;
-                }
-                messageArea.append(response + "\n");
-                dataField.selectAll();
-            }
-        });
+        
     }
 
     /**
