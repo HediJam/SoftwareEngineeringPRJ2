@@ -17,10 +17,15 @@ import java.net.Socket;
  * @author SARIR
  */
 public class BankServer {
+    private String coreFilePath;
+    private String logFilePath;
+    private int port = 9898;
+    
     public static void main(String[] args) throws Exception {
+        BankServer bs = new BankServer();
         System.out.println("The Banking server is running.");
         int clientNumber = 0;
-        ServerSocket listener = new ServerSocket(9898);
+        ServerSocket listener = new ServerSocket(bs.port);
         try {
             while (true) {
                 new Capitalizer(listener.accept(), clientNumber++).start();
