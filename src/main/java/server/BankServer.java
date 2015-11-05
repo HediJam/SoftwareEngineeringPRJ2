@@ -14,7 +14,7 @@ import java.net.Socket;
 
 /**
  *
- * @author SARIR
+ * @author Hedieh Jam
  */
 public class BankServer {
 
@@ -25,11 +25,12 @@ public class BankServer {
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
+        //load core.json
         CoreHandler jsonCoreHandler = new CoreHandler(bs.coreFilePath);
-        
         jsonCoreHandler.readJSONFile();
         bs.port = jsonCoreHandler.getPort();
         bs.logFilePath = jsonCoreHandler.getLogFile();
+        
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
         try {
@@ -105,10 +106,6 @@ public class BankServer {
         private void log(String message) {
             System.out.println(message);
         }
-    }
-
-    private class ServerFields {
-
     }
 
 }

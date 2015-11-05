@@ -18,7 +18,7 @@ import org.json.simple.parser.ParseException;
 
 /**
  *
- * @author SARIR
+ * @author Hedieh Jam
  */
 public class CoreHandler {
     private FileReader jsonFileReader;
