@@ -30,7 +30,6 @@ public class BankServer {
         jsonCoreHandler.readJSONFile();
         bs.port = jsonCoreHandler.getPort();
         bs.logFilePath = jsonCoreHandler.getLogFile();
-        System.out.println("ye gave nazi dashtam khub negahesh nadashtam! " + bs.port + bs.logFilePath);
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
         try {
