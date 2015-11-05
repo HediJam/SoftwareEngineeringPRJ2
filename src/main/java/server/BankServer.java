@@ -17,15 +17,20 @@ import java.net.Socket;
  * @author SARIR
  */
 public class BankServer {
-    private String coreFilePath = "core.json";
-    private String logFilePath;
-    private Integer port = 9898;
-    
+
+    public String coreFilePath = "core.json";
+    public String logFilePath;
+    public int port;
+
     public static void main(String[] args) throws Exception {
+        System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
         CoreHandler jsonCoreHandler = new CoreHandler(bs.coreFilePath);
-        jsonCoreHandler.readJSONFile(bs.port);
-        System.out.println("The Banking server is running.");
+        
+        jsonCoreHandler.readJSONFile();
+        bs.port = jsonCoreHandler.getPort();
+        bs.logFilePath = jsonCoreHandler.getLogFile();
+        System.out.println("ye gave nazi dashtam khub negahesh nadashtam! " + bs.port + bs.logFilePath);
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
         try {
@@ -39,10 +44,11 @@ public class BankServer {
 
     /**
      * A private thread to handle capitalization requests on a particular
-     * socket.  The client terminates the dialogue by sending a single line
+     * socket. The client terminates the dialogue by sending a single line
      * containing only a period.
      */
     private static class Capitalizer extends Thread {
+
         private Socket socket;
         private int clientNumber;
 
@@ -53,9 +59,9 @@ public class BankServer {
         }
 
         /**
-         * Services this thread's client by first sending the
-         * client a welcome message then repeatedly reading strings
-         * and sending back the capitalized version of the string.
+         * Services this thread's client by first sending the client a welcome
+         * message then repeatedly reading strings and sending back the
+         * capitalized version of the string.
          */
         public void run() {
             try {
@@ -94,12 +100,16 @@ public class BankServer {
         }
 
         /**
-         * Logs a simple message.  In this case we just write the
-         * message to the server applications standard output.
+         * Logs a simple message. In this case we just write the message to the
+         * server applications standard output.
          */
         private void log(String message) {
             System.out.println(message);
         }
     }
-    
+
+    private class ServerFields {
+
+    }
+
 }

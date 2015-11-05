@@ -22,32 +22,36 @@ import org.json.simple.parser.ParseException;
  */
 public class CoreHandler {
     private FileReader jsonFileReader;
+    private int portFromFile;
+    private String logFileName;
     public CoreHandler(String jsonFilePath) {
         try {
-            
+            System.out.println("json file name is: " + jsonFilePath);
             jsonFileReader = new FileReader(jsonFilePath);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void readJSONFile(Integer port){
+    public void readJSONFile(){
         JSONParser parser = new JSONParser();
         Object obj = null;
         
         try {
             obj = parser.parse(jsonFileReader);
         } catch (IOException ex) {
-            Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE ,"json core file not found", ex);
         } catch (ParseException ex) {
-            Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CoreHandler.class.getName()).log(Level.SEVERE,"there are some problems in parsing", ex);
         }
         
             JSONObject jsonObject = (JSONObject) obj;
-            port = (Integer) jsonObject.get("port");
+            
+            portFromFile = Integer.valueOf(((Long)jsonObject.get("port")).toString());
+            //String pp = (String) jsonObject.get("port");
             
             
             JSONArray depositsArray = (JSONArray) jsonObject.get("deposits");
-            System.out.println("port: " + port);  
+            
             System.out.println("\ndeposits Array:");
             Iterator<JSONObject> iteratorOverDeposits = depositsArray.iterator();
             while (iteratorOverDeposits.hasNext()) {
@@ -58,7 +62,15 @@ public class CoreHandler {
                 String upperBound =(String) deposit.get("upperBound");
                 System.out.println(customerId + " " + customerName + " " + initialBalance + " " + upperBound);
             }
-            String logFile = (String) jsonObject.get("outLog");
+            logFileName = (String) jsonObject.get("outLog");
             
+            System.out.println(logFileName + " " + portFromFile);
+            
+    }
+    public int getPort(){
+        return portFromFile;
+    }
+    public String getLogFile(){
+        return logFileName;
     }
 }
