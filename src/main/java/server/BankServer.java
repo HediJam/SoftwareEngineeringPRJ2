@@ -62,12 +62,13 @@ public class BankServer {
 
                 // Send a welcome message to the client.
                 out.println("Hello, you are client #" + clientNumber + ".");
-                out.println("Enter a line with only a period to quit\n");
+                out.println("Enter a line with only a period to quit");
 
                 // Get messages from the client, line by line; return them
                 // capitalized
                 while (true) {
                     String input = in.readLine();
+                    System.out.println(input);
                     if (input == null || input.equals(".")) {
                         break;
                     }
