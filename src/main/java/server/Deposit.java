@@ -6,6 +6,8 @@
 package server;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -16,30 +18,33 @@ public class Deposit {
     private String name;
     private BigDecimal Balance;
     private BigDecimal upperBound;
+    static HashMap <String,Deposit> deposits = new HashMap<String , Deposit>();
 
-    Deposit(String name, String initialBalance, String upperBound) {
+    Deposit(String name,String id, String initialBalance, String upperBound) {
         this.name = name;
         this.Balance = new BigDecimal(initialBalance.replaceAll(",", ""));
         this.upperBound = new BigDecimal(upperBound.replaceAll(",", ""));
+        deposits.put(id,this);
     }
 
-    public String depositIn(String amount) {
-
+    public String depositIn(String id,String amount) {
+        Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
-        if(!isPossitiveAmount(amountOfMoney))
+        if(!curDeposit.isPossitiveAmount(amountOfMoney))
             System.out.println("manfie ke");
       //sync
-        if (isPossibleToDeposit(amountOfMoney)) {
-            Balance.add(amountOfMoney);
+        if (curDeposit.isPossibleToDeposit(amountOfMoney)) {
+            curDeposit.Balance.add(amountOfMoney);
             return ("deposit was successful");
         }
         return "unsuccesful";
     }
 
-    public String withdraw(String amount) {
+    public String withdraw(String id,String amount) {
+        Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
-        if(isPossibleToWithdraw(amountOfMoney)){
-            Balance.subtract(amountOfMoney);
+        if(curDeposit.isPossibleToWithdraw(amountOfMoney)){
+            curDeposit.Balance.subtract(amountOfMoney);
             return "withdraw was succesful";
         }
         return "unsucessful";

@@ -21,7 +21,6 @@ public class BankServer {
     public String coreFilePath = "core.json";
     public String logFilePath;
     public int port;
-
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();

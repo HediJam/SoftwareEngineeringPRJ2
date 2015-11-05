@@ -60,6 +60,7 @@ public class CoreHandler {
                 String customerId = (String) deposit.get("id");
                 String initialBalance = (String) deposit.get("initialBalance");
                 String upperBound =(String) deposit.get("upperBound");
+                Deposit curDeposit = new Deposit(customerName, customerId, initialBalance, upperBound);
                 System.out.println(customerId + " " + customerName + " " + initialBalance + " " + upperBound);
             }
             logFileName = (String) jsonObject.get("outLog");
