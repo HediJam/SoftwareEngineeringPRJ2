@@ -16,25 +16,28 @@ import java.util.HashMap;
 public class Deposit {
 
     private String name;
-    private BigDecimal Balance;
+    private BigDecimal balance;
     private BigDecimal upperBound;
-    static HashMap <String,Deposit> deposits = new HashMap<String , Deposit>();
+    static private HashMap <String,Deposit> deposits = new HashMap<String , Deposit>();
 
     Deposit(String name,String id, String initialBalance, String upperBound) {
         this.name = name;
-        this.Balance = new BigDecimal(initialBalance.replaceAll(",", ""));
+        this.balance = new BigDecimal(initialBalance.replaceAll(",", ""));
         this.upperBound = new BigDecimal(upperBound.replaceAll(",", ""));
         deposits.put(id,this);
     }
 
-    public String depositIn(String id,String amount) {
+    public static String depositIn(String id,String amount) {
         Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
         if(!curDeposit.isPossitiveAmount(amountOfMoney))
             System.out.println("manfie ke");
       //sync
         if (curDeposit.isPossibleToDeposit(amountOfMoney)) {
-            curDeposit.Balance.add(amountOfMoney);
+            curDeposit.balance = curDeposit.balance.add(amountOfMoney);
+            
+            System.out.println(curDeposit.balance);
+            System.out.println(deposits.get(id).balance);
             return ("deposit was successful");
         }
         return "unsuccesful";
@@ -44,7 +47,7 @@ public class Deposit {
         Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
         if(curDeposit.isPossibleToWithdraw(amountOfMoney)){
-            curDeposit.Balance.subtract(amountOfMoney);
+            curDeposit.balance = curDeposit.balance.subtract(amountOfMoney);
             return "withdraw was succesful";
         }
         return "unsucessful";
@@ -52,8 +55,8 @@ public class Deposit {
 
     private boolean isPossibleToDeposit(BigDecimal amountOfMoney) {
 
-        BigDecimal tempBalance = Balance.add(amountOfMoney);
-        if (tempBalance.compareTo(upperBound) > 0) {
+        BigDecimal tempBalance = balance.add(amountOfMoney);
+        if (tempBalance.compareTo(upperBound) < 0) {
             return true;
         } else {
             return false;
@@ -61,14 +64,16 @@ public class Deposit {
     }
 
     private boolean isPossitiveAmount(BigDecimal amountOfMoney) {
-        if (amountOfMoney.compareTo(BigDecimal.ZERO) > 0) {
+        System.out.println(amountOfMoney);
+        if (amountOfMoney.compareTo(BigDecimal.ZERO) < 0) {
             return false;
         }
            return true;
     }
     private boolean isPossibleToWithdraw(BigDecimal amountOfMoney){
-        BigDecimal tempBalance = Balance.subtract(amountOfMoney);
-        if (tempBalance.compareTo(BigDecimal.ZERO) > 0) {
+        BigDecimal tempBalance = balance.subtract(amountOfMoney);
+        System.out.println(tempBalance);
+        if (tempBalance.compareTo(BigDecimal.ZERO) < 0) {
             return false;
         } else {
             return true;

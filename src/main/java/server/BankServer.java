@@ -29,7 +29,7 @@ public class BankServer {
         jsonCoreHandler.readJSONFile();
         bs.port = jsonCoreHandler.getPort();
         bs.logFilePath = jsonCoreHandler.getLogFile();
-        
+        Deposit.depositIn("33227781", "10");
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
         try {
