@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,6 +23,7 @@ public class BankServer {
     public String coreFilePath = "core.json";
     public String logFilePath;
     public int port;
+
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
@@ -29,9 +32,11 @@ public class BankServer {
         jsonCoreHandler.readJSONFile();
         bs.port = jsonCoreHandler.getPort();
         bs.logFilePath = jsonCoreHandler.getLogFile();
-        Deposit.depositIn("33227781", "10");
+        Deposit.withdraw("33227781", "10");
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
+
+        new ServerCommandLine().start();
         try {
             while (true) {
                 new Capitalizer(listener.accept(), clientNumber++).start();
@@ -104,6 +109,21 @@ public class BankServer {
          */
         private void log(String message) {
             System.out.println(message);
+        }
+    }
+
+    private static class ServerCommandLine extends Thread {
+
+        public void run() {
+            try {
+                BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+                while (true) {
+                    String command = bufferRead.readLine();
+                    System.out.println("entered command is : " + command);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(BankServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

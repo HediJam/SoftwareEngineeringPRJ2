@@ -57,7 +57,7 @@ public class Terminal {
                 JOptionPane.QUESTION_MESSAGE);
 
         // Make connection and initialize streams
-        Socket socket = new Socket(serverAddress, 9898);
+        Socket socket = new Socket(serverAddress, 8080);
         in = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -76,7 +76,7 @@ public class Terminal {
         String sentence;
         String modifiedSentence = null;
         BufferedReader inFromUser = null;
-        Socket clientSocket = new Socket("localhost", 9898);
+        Socket clientSocket = new Socket("localhost", 8080);
 
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());

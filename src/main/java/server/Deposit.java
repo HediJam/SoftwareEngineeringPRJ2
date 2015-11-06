@@ -43,7 +43,7 @@ public class Deposit {
         return "unsuccesful";
     }
 
-    public String withdraw(String id,String amount) {
+    public static String withdraw(String id,String amount) {
         Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
         if(curDeposit.isPossibleToWithdraw(amountOfMoney)){
