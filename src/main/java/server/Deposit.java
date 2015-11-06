@@ -18,13 +18,15 @@ public class Deposit {
     private String name;
     private BigDecimal balance;
     private BigDecimal upperBound;
+    private String id;
     static private HashMap <String,Deposit> deposits = new HashMap<String , Deposit>();
 
     Deposit(String name,String id, String initialBalance, String upperBound) {
+        this.id = id;
         this.name = name;
         this.balance = new BigDecimal(initialBalance.replaceAll(",", ""));
         this.upperBound = new BigDecimal(upperBound.replaceAll(",", ""));
-        deposits.put(id,this);
+        deposits.put(this.id,this);
     }
 
     public static String depositIn(String id,String amount) {
