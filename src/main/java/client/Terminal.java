@@ -30,6 +30,12 @@ public class Terminal {
     private JFrame frame = new JFrame("Capitalize Client");
     private JTextField dataField = new JTextField(40);
     private JTextArea messageArea = new JTextArea(8, 60);
+    
+    private String serverIpAddress;
+    private String serverPort;
+    private String terminalId;
+    private String logFile;
+    
 
     /**
      * Constructs the client by laying out the GUI and registering a listener
@@ -77,7 +83,6 @@ public class Terminal {
         String modifiedSentence = null;
         BufferedReader inFromUser = null;
         Socket clientSocket = new Socket("localhost", 8080);
-
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

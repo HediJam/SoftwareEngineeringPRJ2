@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 
 /**
  *
- * @author SARIR
+ * @author Hedieh Jam
  */
 public class Transaction {
     
@@ -19,15 +19,23 @@ public class Transaction {
     private String amount;
     private String transactionId;
     static public HashMap <String, Transaction> transactions = new LinkedHashMap<>();
-    public Transaction(String transactionId, String type, String amount ,String depositId) {
-        this.depositId = depositId;
-        this.transactionId = transactionId;
-        this.type = type;
-        this.amount = amount;
-        transactions.put(this.transactionId,this);   
-    }
     @Override public String toString(){
         return (depositId+";"+type+";"+amount+";"+transactionId);
+    }
+    public void setDepositId(String depId){
+        depositId = depId;
+    }
+    public void setType(String type){
+        this.type = type;
+    }
+    public void setAmount(String amount){
+        this.amount = amount;
+    }
+    public void setTransactionId(String id){
+        this.transactionId = id;
+    }
+    public void addTransaction(){
+        transactions.put(this.transactionId, this);
     }
     
     
