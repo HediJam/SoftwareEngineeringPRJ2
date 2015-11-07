@@ -78,7 +78,9 @@ public class Terminal {
      * Runs the client application.
      */
     public static void main(String[] args) throws Exception {
-
+        TransactionXMLHandler xmlHandler = new TransactionXMLHandler();
+        xmlHandler.parseTransactionsFile();
+        System.out.println(Transaction.transactions); 
         String sentence;
         String modifiedSentence = null;
         BufferedReader inFromUser = null;

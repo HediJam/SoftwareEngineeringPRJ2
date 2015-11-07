@@ -72,7 +72,7 @@ public class TransactionXMLHandler {
                 StartElement startElement = event.asStartElement();
 
                 if (startElement.getName().getLocalPart().equals("terminal")) {
-                    System.out.println("--start of an item");
+                    System.out.println("--start of an terminal");
                     // attribute
                     Iterator<Attribute> attributes = startElement.getAttributes();
                     while (attributes.hasNext()) {
@@ -86,7 +86,7 @@ public class TransactionXMLHandler {
                         }
                     }
                 } else if (event.asStartElement().getName().getLocalPart().equals("transaction")) {
-                    Transaction currentTransaction = null;
+                    Transaction currentTransaction = new Transaction();
                     try {
                         event = eventReader.nextEvent();
                     } catch (XMLStreamException ex) {
@@ -95,22 +95,49 @@ public class TransactionXMLHandler {
                     Iterator<Attribute> attributes = startElement.getAttributes();
                     while (attributes.hasNext()) {
                         Attribute attribute = attributes.next();
-                        if (attribute.getName().toString().equals("id")) {
-                            System.out.println("id = " + attribute.getValue());
-                            currentTransaction.setTransactionId(attribute.getValue());
-                        } else if (attribute.getName().toString().equals("type")) {
-                            System.out.println("type = " + attribute.getValue());
-                            currentTransaction.setType(attribute.getValue());
-                        } else if (attribute.getName().toString().equals("amount")) {
-                            System.out.println("amount = " + attribute.getValue());
-                            currentTransaction.setAmount(attribute.getValue());
-                        } else if (attribute.getName().toString().equals("deposit")) {
-                            System.out.println("deposit id = " + attribute.getValue());
-                            currentTransaction.setDepositId(attribute.getValue());
+                        switch (attribute.getName().toString()) {
+                            case "id":
+                                System.out.println("id = " + attribute.getValue());
+                                currentTransaction.setTransactionId(attribute.getValue());
+                                break;
+                            case "type":
+                                System.out.println("type = " + attribute.getValue());
+                                currentTransaction.setType(attribute.getValue());
+                                break;
+                            case "amount":
+                                System.out.println("amount = " + attribute.getValue());
+                                currentTransaction.setAmount(attribute.getValue());
+                                break;
+                            case "deposit":
+                                System.out.println("deposit id = " + attribute.getValue());
+                                currentTransaction.setDepositId(attribute.getValue());
+                                break;
                         }
 
                     }
                     currentTransaction.addTransaction();
+                } else if (event.asStartElement().getName().getLocalPart().equals("outLog")) {
+                    Iterator<Attribute> attributes = startElement.getAttributes();
+                    while (attributes.hasNext()) {
+                        Attribute attribute = attributes.next();
+                        if (attribute.getName().toString().equals("path")) {
+                            System.out.println("path = " + attribute.getValue());
+                            logFile = attribute.getValue();
+                        }
+                    }
+                } else if (event.asStartElement().getName().getLocalPart().equals("server")) {
+                    Iterator<Attribute> attributes = startElement.getAttributes();
+                    while (attributes.hasNext()) {
+                        Attribute attribute = attributes.next();
+                        if (attribute.getName().toString().equals("ip")) {
+                            System.out.println("ip = " + attribute.getValue());
+                            serverIpAddress = attribute.getValue();
+                        }
+                        if (attribute.getName().toString().equals("port")) {
+                            System.out.println("port = " + attribute.getValue());
+                            serverPort = attribute.getValue();
+                        }
+                    }
                 }
 
             }
@@ -118,8 +145,8 @@ public class TransactionXMLHandler {
             //reach the end of an item
             if (event.isEndElement()) {
                 EndElement endElement = event.asEndElement();
-                if (endElement.getName().getLocalPart() == "terminal") {
-                    System.out.println("--end of an item\n");
+                if (endElement.getName().getLocalPart().equals("terminal")) {
+                    System.out.println("--end of an terminal\n");
                 }
             }
 
