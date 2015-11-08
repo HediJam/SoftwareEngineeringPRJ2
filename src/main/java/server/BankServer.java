@@ -39,7 +39,7 @@ public class BankServer {
         new ServerCommandLine().start();
         try {
             while (true) {
-                new Capitalizer(listener.accept(), clientNumber++).start();
+                new TransactionServiceProvider(listener.accept(), clientNumber++).start();
             }
         } finally {
             listener.close();
@@ -51,12 +51,12 @@ public class BankServer {
      * socket. The client terminates the dialogue by sending a single line
      * containing only a period.
      */
-    private static class Capitalizer extends Thread {
+    private static class TransactionServiceProvider  extends Thread {
 
         private Socket socket;
         private int clientNumber;
 
-        public Capitalizer(Socket socket, int clientNumber) {
+        public TransactionServiceProvider(Socket socket, int clientNumber) {
             this.socket = socket;
             this.clientNumber = clientNumber;
             log("New connection with client# " + clientNumber + " at " + socket);
@@ -79,17 +79,18 @@ public class BankServer {
 
                 // Send a welcome message to the client.
                 out.println("Hello, you are client #" + clientNumber + ".");
-                out.println("Enter a line with only a period to quit");
+                out.println("we are ready to service you");
 
                 // Get messages from the client, line by line; return them
                 // capitalized
                 while (true) {
                     String input = in.readLine();
-                    System.out.println(input);
+                    System.out.println("message for client! " + input);
                     if (input == null || input.equals(".")) {
                         break;
                     }
-                    out.println(input.toUpperCase());
+                    TransactionExecuter executer = new TransactionExecuter(input);
+                    out.println(executer.execute());
                 }
             } catch (IOException e) {
                 log("Error handling client# " + clientNumber + ": " + e);

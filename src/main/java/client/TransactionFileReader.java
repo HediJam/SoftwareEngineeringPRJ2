@@ -28,42 +28,42 @@ import javax.xml.stream.events.XMLEvent;
  *
  * @author Hedieh Jam
  */
-public class TransactionXMLHandler {
+public class TransactionFileReader {
 
     private XMLInputFactory factory;
     private InputStream xmlInputStream;
-    private XMLEventReader eventReader;
+    
 
     private String serverIpAddress;
     private String serverPort;
     private String terminalId;
-    private String logFile;
+    private String logFileName;
     private String terminalType;
 
-    public TransactionXMLHandler() {
+    public TransactionFileReader() {
 
         factory = XMLInputFactory.newInstance();
         try {
             xmlInputStream = new FileInputStream("terminal.xml");
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(TransactionXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TransactionFileReader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void parseTransactionsFile() {
-        String tagValue = null;
+        XMLEventReader eventReader = null;
 
         try {
             eventReader = factory.createXMLEventReader(xmlInputStream);
         } catch (XMLStreamException ex) {
-            Logger.getLogger(TransactionXMLHandler.class.getName()).log(Level.SEVERE, "can not event reader", ex);
+            Logger.getLogger(TransactionFileReader.class.getName()).log(Level.SEVERE, "can not event reader", ex);
         }
         while (eventReader.hasNext()) {
             XMLEvent event = null;
             try {
                 event = eventReader.nextEvent();
             } catch (XMLStreamException ex) {
-                Logger.getLogger(TransactionXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TransactionFileReader.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             //reach the start of an item
@@ -90,7 +90,7 @@ public class TransactionXMLHandler {
                     try {
                         event = eventReader.nextEvent();
                     } catch (XMLStreamException ex) {
-                        Logger.getLogger(TransactionXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(TransactionFileReader.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     Iterator<Attribute> attributes = startElement.getAttributes();
                     while (attributes.hasNext()) {
@@ -122,7 +122,7 @@ public class TransactionXMLHandler {
                         Attribute attribute = attributes.next();
                         if (attribute.getName().toString().equals("path")) {
                             System.out.println("path = " + attribute.getValue());
-                            logFile = attribute.getValue();
+                            logFileName = attribute.getValue();
                         }
                     }
                 } else if (event.asStartElement().getName().getLocalPart().equals("server")) {
@@ -151,5 +151,14 @@ public class TransactionXMLHandler {
             }
 
         }
+    }
+    public String getServerIp(){
+        return serverIpAddress;
+    }
+    public String getServerPort(){
+        return serverPort;
+    }
+    public String getLogFileName(){
+        return logFileName;
     }
 }

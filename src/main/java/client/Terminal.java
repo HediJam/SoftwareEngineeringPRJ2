@@ -78,7 +78,7 @@ public class Terminal {
      * Runs the client application.
      */
     public static void main(String[] args) throws Exception {
-        TransactionXMLHandler xmlHandler = new TransactionXMLHandler();
+        TransactionFileReader xmlHandler = new TransactionFileReader();
         xmlHandler.parseTransactionsFile();
         System.out.println(Transaction.transactions); 
         String sentence;
@@ -94,11 +94,11 @@ public class Terminal {
         System.out.println("FROM SERVER: " + modifiedSentence);
          modifiedSentence = inFromServer.readLine();
         System.out.println("FROM SERVER: " + modifiedSentence);
-        
-        while (true) {
-            System.out.println("d");
-            sentence = inFromUser.readLine();
-            outToServer.writeBytes(sentence + '\n');
+        System.out.println(Transaction.transactions.size());
+        for (String formattedTransaction : Transaction.transactions.keySet()){
+            System.out.println(Transaction.transactions.get(formattedTransaction).toString());
+           // sentence = inFromUser.readLine();
+            outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
             modifiedSentence = inFromServer.readLine(); 
             System.out.println("From server :" + modifiedSentence) ;
         }

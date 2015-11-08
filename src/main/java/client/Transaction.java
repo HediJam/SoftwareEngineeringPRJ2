@@ -37,6 +37,15 @@ public class Transaction {
     public void addTransaction(){
         transactions.put(this.transactionId, this);
     }
+    public String getType(){
+        return type;
+    }
+    public String getAmount(){
+        return amount;
+    }
+    public String getDepositId(){
+        return depositId;
+    }
     
     
 }
