@@ -35,27 +35,29 @@ public class Deposit {
         if(!curDeposit.isPossitiveAmount(amountOfMoney))
             System.out.println("manfie ke");
       //sync
-        if (curDeposit.isPossibleToDeposit(amountOfMoney)) {
+        /*if (curDeposit.isPossibleToDeposit(amountOfMoney)) {
             curDeposit.balance = curDeposit.balance.add(amountOfMoney);
             
             System.out.println(curDeposit.balance);
             System.out.println(deposits.get(id).balance);
             return ("deposit was successful");
-        }
+        }*/
+        boolean successState = curDeposit.addDepositBalance(amountOfMoney);
+        
+        if (successState)
+            return "succesful";
         return "unsuccesful";
     }
 
     public static String withdraw(String id,String amount) {
         Deposit curDeposit = deposits.get(id);
         BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
-        if(curDeposit.isPossibleToWithdraw(amountOfMoney)){
-            curDeposit.balance = curDeposit.balance.subtract(amountOfMoney);
-            return "withdraw was succesful";
-        }
+        if(curDeposit.subcribeDepositBalance(amountOfMoney))
+            return "successful";
         return "unsucessful";
     }
 
-    private boolean isPossibleToDeposit(BigDecimal amountOfMoney) {
+    private synchronized boolean isPossibleToDeposit(BigDecimal amountOfMoney) {
 
         BigDecimal tempBalance = balance.add(amountOfMoney);
         if (tempBalance.compareTo(upperBound) < 0) {
@@ -72,7 +74,7 @@ public class Deposit {
         }
            return true;
     }
-    private boolean isPossibleToWithdraw(BigDecimal amountOfMoney){
+    private synchronized boolean isPossibleToWithdraw(BigDecimal amountOfMoney){
         BigDecimal tempBalance = balance.subtract(amountOfMoney);
         System.out.println(tempBalance);
         if (tempBalance.compareTo(BigDecimal.ZERO) < 0) {
@@ -80,5 +82,23 @@ public class Deposit {
         } else {
             return true;
         }
+    }
+    private synchronized boolean addDepositBalance(BigDecimal amountOfMoney){
+        if (isPossibleToDeposit(amountOfMoney)) {
+            balance = balance.add(amountOfMoney);
+            
+            System.out.println(balance);
+            System.out.println(deposits.get(id).balance);
+            return true;
+        }
+        return false;
+        
+    }
+    private synchronized boolean subcribeDepositBalance(BigDecimal amountOfMoney){
+        if(isPossibleToWithdraw(amountOfMoney)){
+            balance = balance.subtract(amountOfMoney);
+            return true;
+        }
+        return false;
     }
 }
