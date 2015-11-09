@@ -23,12 +23,13 @@ public class BankServer {
     public String coreFilePath = "core.json";
     public String logFilePath;
     public int port;
+    private static CoreHandler jsonCoreHandler;
 
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
         //load core.json
-        CoreHandler jsonCoreHandler = new CoreHandler(bs.coreFilePath);
+        jsonCoreHandler = new CoreHandler(bs.coreFilePath);
         jsonCoreHandler.readJSONFile();
         bs.port = jsonCoreHandler.getPort();
         bs.logFilePath = jsonCoreHandler.getLogFile();
@@ -121,6 +122,8 @@ public class BankServer {
                 while (true) {
                     String command = bufferRead.readLine();
                     System.out.println("entered command is : " + command);
+                    jsonCoreHandler.writeToJsonFile();
+                    
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BankServer.class.getName()).log(Level.SEVERE, null, ex);
