@@ -161,4 +161,10 @@ public class TransactionFileReader {
     public String getLogFileName(){
         return logFileName;
     }
+    public String getTerminalType(){
+        return terminalType;
+    }
+    public String getTerminalId(){
+        return terminalId;
+    }
 }

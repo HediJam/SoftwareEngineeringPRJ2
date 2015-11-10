@@ -13,6 +13,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -21,86 +25,86 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author SARIR
+ * @author Hedieh Jam
  */
 public class Terminal {
 
-    private BufferedReader in;
-    private PrintWriter out;
-    private JFrame frame = new JFrame("Capitalize Client");
-    private JTextField dataField = new JTextField(40);
-    private JTextArea messageArea = new JTextArea(8, 60);
-    
     private String serverIpAddress;
     private String serverPort;
     private String terminalId;
-    private String logFile;
-    
+    private FileHandler logFileHandler;
+    private String terminalType;
+    private Logger terminalLogger;
 
-    /**
-     * Constructs the client by laying out the GUI and registering a listener
-     * with the textfield so that pressing Enter in the listener sends the
-     * textfield contents to the server.
-     */
     public Terminal() {
-        
-    }
-
-    /**
-     * Implements the connection logic by prompting the end user for the
-     * server's IP address, connecting, setting up streams, and consuming the
-     * welcome messages from the server. The Capitalizer protocol says that the
-     * server sends three lines of text to the client immediately after
-     * establishing a connection.
-     */
-    public void connectToServer() throws IOException {
-
-        // Get the server address from a dialog box.
-        String serverAddress = JOptionPane.showInputDialog(
-                frame,
-                "Enter IP Address of the Server:",
-                "Welcome to the Capitalization Program",
-                JOptionPane.QUESTION_MESSAGE);
-
-        // Make connection and initialize streams
-        Socket socket = new Socket(serverAddress, 8080);
-        in = new BufferedReader(
-                new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
-
-        // Consume the initial welcoming messages from the server
-        for (int i = 0; i < 3; i++) {
-            messageArea.append(in.readLine() + "\n");
-        }
-    }
-
-    /**
-     * Runs the client application.
-     */
-    public static void main(String[] args) throws Exception {
         TransactionFileReader xmlHandler = new TransactionFileReader();
         xmlHandler.parseTransactionsFile();
-        System.out.println(Transaction.transactions); 
-        String sentence;
-        String modifiedSentence = null;
-        BufferedReader inFromUser = null;
-        Socket clientSocket = new Socket("localhost", 8080);
-        inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        System.out.println(Transaction.transactions);
+        serverIpAddress = xmlHandler.getServerIp();
+        serverPort = xmlHandler.getServerPort();
+        terminalId = xmlHandler.getTerminalId();
+        terminalType = xmlHandler.getTerminalType();
+        setLogger(xmlHandler.getLogFileName());
 
-        System.out.println("aval while");
-        modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);
-         modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);
+    }
+
+    private void setLogger(String logFileName) {
+        terminalLogger = Logger.getLogger("terminalLogger" + terminalId);
+        try {
+            logFileHandler = new FileHandler(logFileName);
+        } catch (IOException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        terminalLogger.addHandler(logFileHandler);
+        SimpleFormatter formatter = new SimpleFormatter();
+        logFileHandler.setFormatter(formatter);
+    }
+
+ 
+
+    public static void main(String[] args) throws Exception {
+        
+        Terminal runnigTerminal = new Terminal();
+        Socket clientSocket = runnigTerminal.connectToServer();
+        runnigTerminal.requestTransactionExecution(clientSocket);
+
+    }
+   private Socket connectToServer() throws IOException {
+        Socket clientSocket = new Socket(serverIpAddress, Integer.parseInt(serverPort));
+        return clientSocket;
+    }
+    private void requestTransactionExecution(Socket clientSocket) {
+        DataOutputStream outToServer = null;
+        try {
+            outToServer = new DataOutputStream(clientSocket.getOutputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+            terminalLogger.severe("socket can not write on server port");
+        }
+        BufferedReader inFromServer = null;
+        try {
+            inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        } catch (IOException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         System.out.println(Transaction.transactions.size());
-        for (String formattedTransaction : Transaction.transactions.keySet()){
-            System.out.println(Transaction.transactions.get(formattedTransaction).toString());
-           // sentence = inFromUser.readLine();
-            outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
-            modifiedSentence = inFromServer.readLine(); 
-            System.out.println("From server :" + modifiedSentence) ;
+        for (String formattedTransaction : Transaction.transactions.keySet()) {
+            try {
+                //System.out.println(Transaction.transactions.get(formattedTransaction).toString());
+                outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
+            } catch (IOException ex) {
+                Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            String reponseForServer = null;
+            try {
+                reponseForServer = inFromServer.readLine();
+            } catch (IOException ex) {
+                Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("From server :" + reponseForServer);
         }
     }
 
