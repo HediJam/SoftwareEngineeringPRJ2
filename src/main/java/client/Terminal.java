@@ -5,23 +5,16 @@
  */
 package client;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+
 
 /**
  *
@@ -58,7 +51,7 @@ public class Terminal {
             Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
         }
         terminalLogger.addHandler(logFileHandler);
-        SimpleFormatter formatter = new SimpleFormatter();
+        TerminalFormatter formatter = new TerminalFormatter(terminalId, terminalType);
         logFileHandler.setFormatter(formatter);
     }
 
@@ -71,8 +64,15 @@ public class Terminal {
         runnigTerminal.requestTransactionExecution(clientSocket);
 
     }
-   private Socket connectToServer() throws IOException {
-        Socket clientSocket = new Socket(serverIpAddress, Integer.parseInt(serverPort));
+   private Socket connectToServer(){
+        Socket clientSocket = null;
+        try {
+            clientSocket = new Socket(serverIpAddress, Integer.parseInt(serverPort));
+        } catch (IOException ex) {
+            terminalLogger.severe("can not find the server:program terminated");
+            System.exit(0);
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return clientSocket;
     }
     private void requestTransactionExecution(Socket clientSocket) {
@@ -80,31 +80,38 @@ public class Terminal {
         try {
             outToServer = new DataOutputStream(clientSocket.getOutputStream());
         } catch (IOException ex) {
+            terminalLogger.severe("socket can not write on server port in 'requestTransactionExecution' method");
             Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
-            terminalLogger.severe("socket can not write on server port");
+            
         }
         BufferedReader inFromServer = null;
         try {
             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException ex) {
             Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+            terminalLogger.severe("socket can not read from server port in 'requestTransactionExecution' method");
         }
 
         System.out.println(Transaction.transactions.size());
         for (String formattedTransaction : Transaction.transactions.keySet()) {
             try {
-                //System.out.println(Transaction.transactions.get(formattedTransaction).toString());
                 outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
             } catch (IOException ex) {
                 Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+                terminalLogger.severe("socket can not write on server port in 'requestTransactionExecution' method");
             }
             String reponseForServer = null;
             try {
+    
                 reponseForServer = inFromServer.readLine();
             } catch (IOException ex) {
                 Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+                terminalLogger.severe("socket can not read from server port in 'requestTransactionExecution' method");
+                
             }
             System.out.println("From server :" + reponseForServer);
+            terminalLogger.info(reponseForServer);
+            
         }
     }
 

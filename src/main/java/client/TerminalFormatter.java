@@ -5,6 +5,9 @@
  */
 package client;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
@@ -21,6 +24,9 @@ public class TerminalFormatter extends  Formatter{
     }
   @Override
     public String format(LogRecord record) {
-        return record.getLevel() + ":" + terminalType + ":" + terminalId +":"+record.getMessage();
+        String msg = String.valueOf(System.currentTimeMillis());
+        msg += "\r\n" + record.getLevel() + ":" + terminalType + ":" + terminalId +":"+record.getMessage() + "\r\n";
+        return msg;
     }
+    
 }

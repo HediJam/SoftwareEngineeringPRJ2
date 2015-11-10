@@ -79,8 +79,8 @@ public class BankServer {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
                 // Send a welcome message to the client.
-                out.println("Hello, you are client #" + clientNumber + ".");
-                out.println("we are ready to service you");
+                //out.println("Hello, you are client #" + clientNumber + ".");
+                //out.println("we are ready to service you");
 
                 // Get messages from the client, line by line; return them
                 // capitalized
