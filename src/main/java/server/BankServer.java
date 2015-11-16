@@ -91,10 +91,11 @@ public class BankServer {
                     }
                     System.out.println("from client :   " + input);
                     TransactionExecuter executer = new TransactionExecuter(input);
+                    
                     String transactionResult = executer.execute();
                     //System.out.println(transactionResult);
                     out.println(transactionResult);
-                    serverLogger.info(transactionResult);
+                    serverLogger.info(executer.getOriginTerminal()+ ":"+ transactionResult);
                 }
             } catch (IOException e) {
 

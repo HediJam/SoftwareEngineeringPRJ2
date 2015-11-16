@@ -96,7 +96,7 @@ public class Terminal {
         for (String formattedTransaction : Transaction.transactions.keySet()) {
             System.out.println("sare for");
             try {
-                outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
+                outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + terminalId + ";" + terminalType + '\n');
             } catch (IOException ex) {
                 Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
                 terminalLogger.severe("socket can not write on server port in 'requestTransactionExecution' method");

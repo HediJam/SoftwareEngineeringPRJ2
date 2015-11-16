@@ -11,14 +11,18 @@ import client.Transaction;
  * @author SARIR
  */
 public class TransactionExecuter {
-    Transaction transaction;
+    private Transaction transaction;
+    private String originTerminal;
     public TransactionExecuter(String clientMessage) {
         String[] parts = clientMessage.split(";");
         transaction = new Transaction();
         transaction.setDepositId(parts[0]);
         transaction.setType(parts[1]);
         transaction.setAmount(parts[2]);
-        transaction.setTransactionId(parts[3]);    
+        transaction.setTransactionId(parts[3]);
+        originTerminal = parts[5] + ":"+ parts[4];
+        //System.out.println("tuye executer " + parts[4] + parts[5]);
+        
     }
     public String execute(){
         if(transaction.getType().equals("deposit")){
@@ -28,6 +32,12 @@ public class TransactionExecuter {
             return Deposit.withdraw(transaction.getDepositId(), transaction.getAmount());
         }
         return "invalid command\r\n";
+    }
+    public String getTransactionIdentification(){
+        return "";
+    }
+    public String getOriginTerminal(){
+        return originTerminal;
     }
     
     

@@ -20,7 +20,7 @@ public class Transaction {
     private String transactionId;
     static public HashMap <String, Transaction> transactions = new LinkedHashMap<>();
     @Override public String toString(){
-        return (depositId+";"+type+";"+amount+";"+transactionId);
+        return (depositId+";"+type+";"+amount+";"+transactionId+";");
     }
     public void setDepositId(String depId){
         depositId = depId;
@@ -34,6 +34,7 @@ public class Transaction {
     public void setTransactionId(String id){
         this.transactionId = id;
     }
+
     public void addTransaction(){
         transactions.put(this.transactionId, this);
     }
@@ -45,6 +46,9 @@ public class Transaction {
     }
     public String getDepositId(){
         return depositId;
+    }
+    public String getTransactionId(){
+        return transactionId;
     }
     
     
