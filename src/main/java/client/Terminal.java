@@ -25,7 +25,6 @@ public class Terminal {
     private String serverIpAddress;
     private String serverPort;
     private String terminalId;
-    private FileHandler logFileHandler;
     private String terminalType;
     private Logger terminalLogger;
 
@@ -43,6 +42,7 @@ public class Terminal {
 
     private void setLogger(String logFileName) {
         terminalLogger = Logger.getLogger("terminalLogger" + terminalId);
+        FileHandler logFileHandler = null;
         try {
             logFileHandler = new FileHandler(logFileName);
         } catch (IOException ex) {
@@ -94,6 +94,7 @@ public class Terminal {
 
         System.out.println(Transaction.transactions.size());
         for (String formattedTransaction : Transaction.transactions.keySet()) {
+            System.out.println("sare for");
             try {
                 outToServer.writeBytes(Transaction.transactions.get(formattedTransaction).toString() + '\n');
             } catch (IOException ex) {
