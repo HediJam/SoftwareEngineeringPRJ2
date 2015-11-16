@@ -6,10 +6,8 @@
 package server;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

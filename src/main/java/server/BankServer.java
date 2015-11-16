@@ -5,12 +5,15 @@
  */
 package server;
 
+import client.Terminal;
+import client.TerminalFormatter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,98 +23,93 @@ import java.util.logging.Logger;
  */
 public class BankServer {
 
-    public String coreFilePath = "core.json";
-    public String logFilePath;
-    public int port;
+    private String coreFilePath = "core.json";
+    private int port;
+    private Logger serverLogger;
     private static CoreHandler jsonCoreHandler;
+
+    private BankServer() {
+        jsonCoreHandler = new CoreHandler(coreFilePath);
+        jsonCoreHandler.readJSONFile();
+        port = jsonCoreHandler.getPort();      
+        setLogger(jsonCoreHandler.getLogFile());
+    }
+
+    private void setLogger(String logFileName) {
+        serverLogger = Logger.getLogger("serverLogger");
+        FileHandler logFileHandler = null;
+        try {
+            logFileHandler = new FileHandler(logFileName);
+        } catch (IOException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Terminal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        serverLogger.addHandler(logFileHandler);
+        ServerFormatter formatter = new ServerFormatter();
+        logFileHandler.setFormatter(formatter);
+
+    }
 
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
-        //load core.json
-        jsonCoreHandler = new CoreHandler(bs.coreFilePath);
-        jsonCoreHandler.readJSONFile();
-        bs.port = jsonCoreHandler.getPort();
-        bs.logFilePath = jsonCoreHandler.getLogFile();
-        Deposit.withdraw("33227781", "10");
         int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
 
         new ServerCommandLine().start();
         try {
             while (true) {
-                new TransactionServiceProvider(listener.accept(), clientNumber++).start();
+                new TransactionServiceProvider(listener.accept(), clientNumber++,bs.serverLogger).start();
             }
         } finally {
             listener.close();
         }
     }
 
-    /**
-     * A private thread to handle capitalization requests on a particular
-     * socket. The client terminates the dialogue by sending a single line
-     * containing only a period.
-     */
-    private static class TransactionServiceProvider  extends Thread {
+    private static class TransactionServiceProvider extends Thread {
 
         private Socket socket;
         private int clientNumber;
+        private Logger serverLogger;
 
-        public TransactionServiceProvider(Socket socket, int clientNumber) {
+        public TransactionServiceProvider(Socket socket, int clientNumber , Logger serverLogger) {
             this.socket = socket;
             this.clientNumber = clientNumber;
-            log("New connection with client# " + clientNumber + " at " + socket);
+            this.serverLogger = serverLogger;
+            //log("New connection with client# " + clientNumber + " at " + socket);
         }
 
-        /**
-         * Services this thread's client by first sending the client a welcome
-         * message then repeatedly reading strings and sending back the
-         * capitalized version of the string.
-         */
+
         public void run() {
             try {
-
-                // Decorate the streams so we can send characters
-                // and not just bytes.  Ensure output is flushed
-                // after every newline.
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-                // Send a welcome message to the client.
-                //out.println("Hello, you are client #" + clientNumber + ".");
-                //out.println("we are ready to service you");
-
-                // Get messages from the client, line by line; return them
-                // capitalized
                 while (true) {
                     String input = in.readLine();
-                    System.out.println("message for client! " + input);
-                    if (input == null || input.equals(".")) {
+                    if (input == null) {
                         break;
                     }
+                    System.out.println("from client :   " + input);
                     TransactionExecuter executer = new TransactionExecuter(input);
-                    out.println(executer.execute());
+                    String transactionResult = executer.execute();
+                    out.println(transactionResult);
+                    serverLogger.severe(transactionResult);
                 }
             } catch (IOException e) {
-                log("Error handling client# " + clientNumber + ": " + e);
+
             } finally {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    log("Couldn't close a socket, what's going on?");
+                    
                 }
-                log("Connection with client# " + clientNumber + " closed");
+
             }
         }
 
-        /**
-         * Logs a simple message. In this case we just write the message to the
-         * server applications standard output.
-         */
-        private void log(String message) {
-            System.out.println(message);
-        }
     }
 
     private static class ServerCommandLine extends Thread {
@@ -123,7 +121,7 @@ public class BankServer {
                     String command = bufferRead.readLine();
                     System.out.println("entered command is : " + command);
                     jsonCoreHandler.writeToJsonFile();
-                    
+
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BankServer.class.getName()).log(Level.SEVERE, null, ex);
