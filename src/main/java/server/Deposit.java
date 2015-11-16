@@ -32,34 +32,38 @@ public class Deposit {
     }
 
     public static String depositIn(String id, String amount) {
-        Deposit curDeposit = deposits.get(id);
-        BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
-        if (!curDeposit.isPossitiveAmount(amountOfMoney)) {
-            System.out.println("manfie ke");
-        }
-        //sync
-        /*if (curDeposit.isPossibleToDeposit(amountOfMoney)) {
-         curDeposit.balance = curDeposit.balance.add(amountOfMoney);
-            
-         System.out.println(curDeposit.balance);
-         System.out.println(deposits.get(id).balance);
-         return ("deposit was successful");
-         }*/
-        boolean successState = curDeposit.addDepositBalance(amountOfMoney);
+        Deposit curDeposit = getDepositById(id);
+        
+        if (curDeposit != null) {
+            BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
+            BigDecimal balanceBeforeOperation = curDeposit.balance;
+            if (!curDeposit.isPossitiveAmount(amountOfMoney)) {
+                return curDeposit.operationReport("unsuccessful : negative amount of money", curDeposit, balanceBeforeOperation, amountOfMoney);
+            }
 
-        if (successState) {
-            return "succesful";
+            if (curDeposit.addDepositBalance(amountOfMoney)) {
+                return curDeposit.operationReport("successful", curDeposit, balanceBeforeOperation, amountOfMoney);
+            }
+            return curDeposit.operationReport("unsuccessful : balance will be negative ", curDeposit, balanceBeforeOperation, amountOfMoney);
         }
-        return "unsuccesful";
+        return "unsuccessful : Deposit with id " + id + " not found";
     }
 
     public static String withdraw(String id, String amount) {
-        Deposit curDeposit = deposits.get(id);
-        BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
-        if (curDeposit.subcribeDepositBalance(amountOfMoney)) {
-            return "successful";
+        Deposit curDeposit = getDepositById(id);    
+        if (curDeposit != null) {
+            BigDecimal amountOfMoney = new BigDecimal(amount.replaceAll(",", ""));
+            BigDecimal balanceBeforeOperation = curDeposit.balance;
+            if (!curDeposit.isPossitiveAmount(amountOfMoney)) {
+                return curDeposit.operationReport("unsuccessful : negative amount of money", curDeposit, balanceBeforeOperation, amountOfMoney);
+            }
+            if (curDeposit.subcribeDepositBalance(amountOfMoney)) {
+                return curDeposit.operationReport("successful", curDeposit, balanceBeforeOperation, amountOfMoney);
+            }
+            return curDeposit.operationReport("unsuccessful : balance will be greater than upper bound ", curDeposit, balanceBeforeOperation, amountOfMoney);
         }
-        return "unsucessful";
+        return "unsuccessful : Deposit with id " + id + " not found";
+     
     }
 
     private synchronized boolean isPossibleToDeposit(BigDecimal amountOfMoney) {
@@ -93,7 +97,6 @@ public class Deposit {
     private synchronized boolean addDepositBalance(BigDecimal amountOfMoney) {
         if (isPossibleToDeposit(amountOfMoney)) {
             balance = balance.add(amountOfMoney);
-
             System.out.println(balance);
             System.out.println(deposits.get(id).balance);
             return true;
@@ -127,10 +130,10 @@ public class Deposit {
             chunks.add(number.substring(number.length() - 3));
             number = number.substring(0, number.length() - 3);
         }
-        
-         
-        for(int i=0;i<chunks.size();i++)
-            number = number+"," + chunks.get(chunks.size() - i - 1); 
+
+        for (int i = 0; i < chunks.size(); i++) {
+            number = number + "," + chunks.get(chunks.size() - i - 1);
+        }
         return number;
 
     }
@@ -145,5 +148,18 @@ public class Deposit {
 
     public static HashMap<String, Deposit> getDeposits() {
         return deposits;
+    }
+
+    private String operationReport(String header, Deposit dep, BigDecimal balanceBeforeOperation, BigDecimal amount) {
+        return header + "; " + "deposit id : " + dep.id + "; " + "amount : " + amount.toString() +"; "+ "initial balance : " + balanceBeforeOperation.toString() + "; " + "balance : " + dep.balance.toString();
+    }
+
+    public static Deposit getDepositById(String id) {
+        if (deposits.containsKey(id)) {
+            return deposits.get(id);
+        } else {
+            System.out.println("daram null barmigardunam");
+            return null;
+        }
     }
 }

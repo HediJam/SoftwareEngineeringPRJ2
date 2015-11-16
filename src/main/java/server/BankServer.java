@@ -54,13 +54,12 @@ public class BankServer {
     public static void main(String[] args) throws Exception {
         System.out.println("The Banking server is running.");
         BankServer bs = new BankServer();
-        int clientNumber = 0;
         ServerSocket listener = new ServerSocket(bs.port);
 
         new ServerCommandLine().start();
         try {
             while (true) {
-                new TransactionServiceProvider(listener.accept(), clientNumber++,bs.serverLogger).start();
+                new TransactionServiceProvider(listener.accept(),bs.serverLogger).start();
             }
         } finally {
             listener.close();
@@ -70,12 +69,10 @@ public class BankServer {
     private static class TransactionServiceProvider extends Thread {
 
         private Socket socket;
-        private int clientNumber;
         private Logger serverLogger;
 
-        public TransactionServiceProvider(Socket socket, int clientNumber , Logger serverLogger) {
+        public TransactionServiceProvider(Socket socket, Logger serverLogger) {
             this.socket = socket;
-            this.clientNumber = clientNumber;
             this.serverLogger = serverLogger;
             //log("New connection with client# " + clientNumber + " at " + socket);
         }
@@ -95,8 +92,9 @@ public class BankServer {
                     System.out.println("from client :   " + input);
                     TransactionExecuter executer = new TransactionExecuter(input);
                     String transactionResult = executer.execute();
+                    //System.out.println(transactionResult);
                     out.println(transactionResult);
-                    serverLogger.severe(transactionResult);
+                    serverLogger.info(transactionResult);
                 }
             } catch (IOException e) {
 

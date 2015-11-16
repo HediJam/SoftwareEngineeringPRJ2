@@ -28,7 +28,7 @@ public class Terminal {
     private String terminalType;
     private Logger terminalLogger;
 
-    public Terminal() {
+    private Terminal() {
         TransactionFileReader xmlHandler = new TransactionFileReader();
         xmlHandler.parseTransactionsFile();
         System.out.println(Transaction.transactions);

@@ -3,6 +3,7 @@
     <outLog path="term21374.log" />
     <transactions>
         <transaction id="1" type="deposit" amount= "3,000" deposit="33227781"/>
-        <transaction id="2" type="withdraw" amount="10,000" deposit ="35527439" />
+        <transaction id="2" type="withdraw" amount="10,000" deposit="35527439"/>
+		<transaction id="3" type="withdraw" amount="10,000" deposit="35527139"/>
     </transactions>
 </terminal>

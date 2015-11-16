@@ -1,4 +1,6 @@
-1447659668132
-INFO:ATM:21374:succesfulfor logging
-1447659668163
-INFO:ATM:21374:unsucessful
+1447674164868
+INFO:ATM:21374:successful; deposit id : 33227781; amount : 3000; initial balance : 1000; balance : 4000
+1447674164899
+INFO:ATM:21374:unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; initial balance : 0; balance : 0
+1447674164899
+INFO:ATM:21374:unsuccessful : Deposit with id 35527139 not found

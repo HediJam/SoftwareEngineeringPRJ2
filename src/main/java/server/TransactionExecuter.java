@@ -22,12 +22,12 @@ public class TransactionExecuter {
     }
     public String execute(){
         if(transaction.getType().equals("deposit")){
-            return Deposit.depositIn(transaction.getDepositId(), transaction.getAmount()) + "for logging";
+            return Deposit.depositIn(transaction.getDepositId(), transaction.getAmount());
         }
         else if(transaction.getType().equals("withdraw")){
             return Deposit.withdraw(transaction.getDepositId(), transaction.getAmount());
         }
-        return "invalid action";
+        return "invalid command\r\n";
     }
     
     
