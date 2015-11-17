@@ -31,7 +31,7 @@ public class TransactionResultWriter {
 
     private String terminalId;
     private String terminalType;
-    private static ArrayList<TransactionResult> responses;
+    private static ArrayList<TransactionResult> responsesList;
 
     public TransactionResultWriter() {
     }
@@ -39,9 +39,12 @@ public class TransactionResultWriter {
     public TransactionResultWriter(String id, String type) {
         terminalId = id;
         terminalType = type;
+        responsesList = new ArrayList<>();
     }
 
-    public void addResponse() {
+    public void addResponse(String res) {
+        TransactionResult tr = new TransactionResult(res);
+        responsesList.add(tr);
     }
 
     public void writeToXML() {
@@ -56,9 +59,12 @@ public class TransactionResultWriter {
 
             Element responses = doc.createElement("responses");
             rootElement.appendChild(responses);
-            Element response = doc.createElement("response");
-            response.setAttribute("balance", "10000");
-            responses.appendChild(response);
+            for (TransactionResult tr : responsesList) {
+                Element response = doc.createElement("response");
+                response.setAttribute("balance", tr.balance);
+                response.setAttribute("termId", terminalId);
+                responses.appendChild(response);
+            }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -85,11 +91,20 @@ public class TransactionResultWriter {
         String initialBalance;
 
         public TransactionResult(String result) {
-            String[] parts = result.split(";|:");
-            if (parts.length > 10){
-                transaction.setAmount(result);
+            //INFO;ATM;21374;unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; 
+            String[] parts = result.split(";");
+            //System.out.println(parts[0]);
+            state = parts[0].split(":")[0];
+            if (parts.length > 3) {
+                transaction = new Transaction();
+                transaction.setDepositId(parts[1].split(":")[1]);
+                transaction.setAmount(parts[2].split(":")[1]);
+                balance = parts[3].split(":")[1];
+                initialBalance = parts[4].split(":")[1];
+                
+
             }
-            
+
         }
 
     }

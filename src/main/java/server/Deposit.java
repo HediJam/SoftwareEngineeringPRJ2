@@ -62,7 +62,7 @@ public class Deposit {
             }
             return curDeposit.operationReport("unsuccessful : balance will be greater than upper bound ", curDeposit, balanceBeforeOperation, amountOfMoney);
         }
-        return "unsuccessful -> Deposit with id " + id + " not found";
+        return "unsuccessful : Deposit with id " + id + " not found";
      
     }
 

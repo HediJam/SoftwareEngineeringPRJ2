@@ -26,10 +26,15 @@ public class TransactionExecuter {
     }
     public String execute(){
         if(transaction.getType().equals("deposit")){
-            return Deposit.depositIn(transaction.getDepositId(), transaction.getAmount());
+            String operationResult = Deposit.depositIn(transaction.getDepositId(), transaction.getAmount());
+            operationResult += attachTransactionId(transaction);
+            return operationResult;
         }
         else if(transaction.getType().equals("withdraw")){
-            return Deposit.withdraw(transaction.getDepositId(), transaction.getAmount());
+            String operationResult = Deposit.withdraw(transaction.getDepositId(), transaction.getAmount());
+            operationResult += attachTransactionId(transaction);
+            return operationResult;
+            
         }
         return "invalid command\r\n";
     }
@@ -38,6 +43,9 @@ public class TransactionExecuter {
     }
     public String getOriginTerminal(){
         return originTerminal;
+    }
+    private String attachTransactionId(Transaction tr){
+        return "transaction Id : " + tr.getTransactionId() + ";";
     }
     
     

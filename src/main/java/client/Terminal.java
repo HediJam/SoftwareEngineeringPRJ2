@@ -27,6 +27,7 @@ public class Terminal {
     private String terminalId;
     private String terminalType;
     private Logger terminalLogger;
+    private TransactionResultWriter trw;
 
     private Terminal() {
         TransactionFileReader xmlHandler = new TransactionFileReader();
@@ -36,6 +37,7 @@ public class Terminal {
         serverPort = xmlHandler.getServerPort();
         terminalId = xmlHandler.getTerminalId();
         terminalType = xmlHandler.getTerminalType();
+        trw = new TransactionResultWriter(terminalId ,terminalType);
         setLogger(xmlHandler.getLogFileName());
 
     }
@@ -61,8 +63,8 @@ public class Terminal {
         
         Terminal runnigTerminal = new Terminal();
         Socket clientSocket = runnigTerminal.connectToServer();
-        TransactionResultWriter trw = new TransactionResultWriter(runnigTerminal.terminalId , runnigTerminal.terminalType);
         runnigTerminal.requestTransactionExecution(clientSocket);
+        runnigTerminal.trw.writeToXML();
         
 
     }
@@ -113,7 +115,7 @@ public class Terminal {
                 
             }
             System.out.println("From server :" + reponseForServer);
-            
+            trw.addResponse(reponseForServer);
             terminalLogger.info(reponseForServer);
             
         }
