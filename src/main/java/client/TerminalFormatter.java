@@ -25,7 +25,7 @@ public class TerminalFormatter extends  Formatter{
   @Override
     public String format(LogRecord record) {
         String msg = String.valueOf(System.currentTimeMillis());
-        msg += "\r\n" + record.getLevel() + ":" + terminalType + ":" + terminalId +":"+record.getMessage() + "\r\n";
+        msg += "\r\n" + record.getLevel() + ";" + terminalType + ";" + terminalId +";"+record.getMessage() + "\r\n";
         return msg;
     }
     

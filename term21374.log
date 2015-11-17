@@ -1,2 +1,6 @@
-1447761732906
-SEVERE:ATM:21374:can not find the server:program terminated
+1447775613607
+INFO;ATM;21374;successful; deposit id : 33227781; amount : 3000; initial balance : 1000; balance : 4000
+1447775613635
+INFO;ATM;21374;unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; initial balance : 0; balance : 0
+1447775613638
+INFO;ATM;21374;unsuccessful -> Deposit with id 35527139 not found

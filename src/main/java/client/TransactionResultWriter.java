@@ -6,6 +6,7 @@
 package client;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,42 +23,49 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
- 
-
-
 /**
  *
  * @author SARIR
  */
 public class TransactionResultWriter {
 
-    public TransactionResultWriter() {
+    private String terminalId;
+    private String terminalType;
+    private static ArrayList<TransactionResult> responses;
 
+    public TransactionResultWriter() {
     }
-    public void writeToXML(){
+
+    public TransactionResultWriter(String id, String type) {
+        terminalId = id;
+        terminalType = type;
+    }
+
+    public void addResponse() {
+    }
+
+    public void writeToXML() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
             Element rootElement = doc.createElement("terminal");
             doc.appendChild(rootElement);
-            rootElement.setAttribute("id", "1");
-            rootElement.setAttribute("type", "ATM");
-            
-            
-            
+            rootElement.setAttribute("id", terminalId);
+            rootElement.setAttribute("type", terminalType);
+
             Element responses = doc.createElement("responses");
             rootElement.appendChild(responses);
             Element response = doc.createElement("response");
             response.setAttribute("balance", "10000");
             responses.appendChild(response);
-            
+
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File("response.xml"));
             transformer.transform(source, result);
-            
+
             System.out.println("File saved!");
         } catch (TransformerConfigurationException ex) {
             Logger.getLogger(TransactionResultWriter.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,9 +74,24 @@ public class TransactionResultWriter {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(TransactionResultWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
-                
+
     }
-    
-    
-    
+
+    private class TransactionResult {
+
+        Transaction transaction;
+        String state;
+        String balance;
+        String initialBalance;
+
+        public TransactionResult(String result) {
+            String[] parts = result.split(";|:");
+            if (parts.length > 10){
+                transaction.setAmount(result);
+            }
+            
+        }
+
+    }
+
 }

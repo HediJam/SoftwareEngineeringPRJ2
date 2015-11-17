@@ -61,7 +61,9 @@ public class Terminal {
         
         Terminal runnigTerminal = new Terminal();
         Socket clientSocket = runnigTerminal.connectToServer();
+        TransactionResultWriter trw = new TransactionResultWriter(runnigTerminal.terminalId , runnigTerminal.terminalType);
         runnigTerminal.requestTransactionExecution(clientSocket);
+        
 
     }
    private Socket connectToServer(){
@@ -111,6 +113,7 @@ public class Terminal {
                 
             }
             System.out.println("From server :" + reponseForServer);
+            
             terminalLogger.info(reponseForServer);
             
         }
