@@ -1,6 +1,6 @@
-1447778527745
-INFO;ATM;21374;successful; deposit id : 33227781; amount : 3000; initial balance : 4000; balance : 7000
-1447778527765
-INFO;ATM;21374;unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; initial balance : 0; balance : 0
-1447778527765
-INFO;ATM;21374;unsuccessful : Deposit with id 35527139 not found
+1447784816142
+INFO;ATM;21374; transaction Id : 1; type : deposit;successful; deposit id : 33227781; amount : 3000; initial balance : 7000; balance : 10000
+1447784816161
+INFO;ATM;21374; transaction Id : 2; type : withdraw;unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; initial balance : 0; balance : 0
+1447784816162
+INFO;ATM;21374; transaction Id : 3; type : withdraw;unsuccessful : Deposit with id 35527139 not found

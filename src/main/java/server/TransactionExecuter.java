@@ -27,12 +27,12 @@ public class TransactionExecuter {
     public String execute(){
         if(transaction.getType().equals("deposit")){
             String operationResult = Deposit.depositIn(transaction.getDepositId(), transaction.getAmount());
-            operationResult += attachTransactionId(transaction);
+            operationResult = attachTransactionId(transaction) + operationResult;
             return operationResult;
         }
         else if(transaction.getType().equals("withdraw")){
             String operationResult = Deposit.withdraw(transaction.getDepositId(), transaction.getAmount());
-            operationResult += attachTransactionId(transaction);
+            operationResult = attachTransactionId(transaction) + operationResult;
             return operationResult;
             
         }
@@ -45,7 +45,7 @@ public class TransactionExecuter {
         return originTerminal;
     }
     private String attachTransactionId(Transaction tr){
-        return "transaction Id : " + tr.getTransactionId() + ";";
+        return " transaction Id : " + tr.getTransactionId() + ";" +" type : " + transaction.getType() + ";";
     }
     
     

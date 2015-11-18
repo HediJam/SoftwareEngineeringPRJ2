@@ -61,8 +61,14 @@ public class TransactionResultWriter {
             rootElement.appendChild(responses);
             for (TransactionResult tr : responsesList) {
                 Element response = doc.createElement("response");
+                
+                response.setAttribute("terminalId",tr.transaction.getTransactionId());
+                response.setAttribute("depositId",tr.transaction.getDepositId());
+                response.setAttribute("initialBalance", tr.initialBalance);
+                response.setAttribute("amount",tr.transaction.getAmount());
                 response.setAttribute("balance", tr.balance);
-                response.setAttribute("termId", terminalId);
+                response.setAttribute("terminalId",tr.transaction.getTransactionId());
+                response.setAttribute("status",tr.status);
                 responses.appendChild(response);
             }
 
@@ -85,27 +91,28 @@ public class TransactionResultWriter {
 
     private class TransactionResult {
 
-        Transaction transaction;
-        String state;
-        String balance;
-        String initialBalance;
+        private Transaction transaction;
+        private String status;
+        private String balance;
+        private String initialBalance;
 
         public TransactionResult(String result) {
             //INFO;ATM;21374;unsuccessful : balance will be greater than upper bound ; deposit id : 35527439; amount : 10000; 
             String[] parts = result.split(";");
+            transaction = new Transaction();
             //System.out.println(parts[0]);
-            state = parts[0].split(":")[0];
+            transaction.setTransactionId(parts[0].split(":")[1]);
+            transaction.setType(parts[1].split(":")[1]);
+            status = parts[2].split(":")[0];
             if (parts.length > 3) {
-                transaction = new Transaction();
-                transaction.setDepositId(parts[1].split(":")[1]);
-                transaction.setAmount(parts[2].split(":")[1]);
-                balance = parts[3].split(":")[1];
-                initialBalance = parts[4].split(":")[1];
-                
-
+                transaction.setDepositId(parts[3].split(":")[1]);
+                transaction.setAmount(parts[4].split(":")[1]);
+                balance = parts[5].split(":")[1];
+                initialBalance = parts[6].split(":")[1];
             }
 
         }
+        
 
     }
 
